@@ -17,6 +17,6 @@ To extract ROIs:
    every ROI as a separate mask image into a directory named `JuBrain_ROIs`
    within the current directory.
    
-NOTE: These will be in MNI 1mm space, and actually don't quite seem to be
-masks (values are floats that are close to, but not exactly, 1). Bit more
-processing needed to properly binarise them and convert them to 2 mm space
+NOTE: These will be in SPM's MNI 1mm space, which is a little bit different
+to FSL's MNI 1mm space. Further processing is needed to convert to FSL space
+and to resample to 2mm MNI space (see `xfm_ROIs2FSL.sh` script).
