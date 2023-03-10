@@ -1,0 +1,106 @@
+Area TE 3
+Area 2
+Area PGa (IPL)
+Area 7PC (SPL)
+Area 33
+Amygdala (MF)
+Area 6mr / preSMA
+Area hIP1 (IPS)
+Area hOc5 [V5/MT]
+Area 5Ci (SPL)
+Area hOc4d [V3A]
+Area 44
+Area hIP5 (IPS)
+Area Fo1
+Area PFm (IPL)
+Area hIP2 (IPS)
+Area Id6
+Area 6d1
+BF (Ch 4)
+Area PFt (IPL)
+Area hIP3 (IPS)
+Area PFcm (IPL)
+Area 6d2
+Area Id2 
+Area Ig3
+Dorsal Dentate Nucleus
+Area Fo3
+Area Fo6
+Area hPO1 (IPS)
+Area OP2 [PIVC]
+Area hOc6 [V6]
+Area p24c
+Area Fo7
+Area TE 1.1
+CA1 (Hippocampus)
+Area 3b
+Area 6mc / SMA
+Area hOc3v [V3v]
+Fastigial Nucleus
+Area OP9
+Area Id3 
+Area 45
+Area Ig2 
+Area Fo4
+Amygdala (CM)
+Amygdala (SF)
+Area FG3
+Area TE 4
+Area Fp1
+Area p32
+Area 6d3
+Area hOc4v [V4(v)]
+Area 3a
+Area 4a
+Area TE 1.2
+Area Id4
+Area 5M (SPL)
+Area 4p
+Ventral Dentate Nucleus
+Amygdala (VTM)
+Area FG1
+Area hOc3d [V3d]
+HATA Region
+Area s24
+Area PGp (IPL)
+Area Fo5
+Area hIP4 (IPS)
+Area Fo2
+Area 1
+Area 5L (SPL)
+Area hOc4la
+Area OP1 [SII]
+Area TE 1.0
+Area 7P (SPL)
+Area Ig1 
+Area FG2
+Area TE 5
+Entorhinal Cortex
+Area PF (IPL)
+Area Id1 
+Area 7A (SPL)
+Subiculum
+Area 7M (SPL)
+DG (Hippocampus)
+Area hOc1 [V1]
+Area OP8
+Area p24ab
+Area hOc4lp
+Amygdala (LB)
+Area hIP8 (IPS)
+Area FG4
+Area OP3 [VS]
+Amygdala (IF)
+Area Id7
+Area hIP7 (IPS)
+Area Ia
+Area hIP6 (IPS)
+Area 25
+Area s32
+ Interposed Nucleus
+Area hOc2 [V2]
+Area Id5
+Area OP4 [PV]
+Area Fp2
+BF (Ch 1-3)
+Area PFop (IPL)

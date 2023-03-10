@@ -29,6 +29,45 @@ mkdir -p $outdir
 # Make temporary output directory for storing intermediate results
 tmpoutdir=$(mktemp -d)
 
+# Set path to HCP MNI volume
+HCP_vol=$HCP_anatdir/S1200_AverageT1w_restore.nii.gz
+
+
+### Full probability maps
+echo -e "\nFull probability maps..."
+
+# Resample to HCP MNI volume
+# (wb_command -volume-resample <infile> <ref_vol> <method> <outfile>
+wb_command -volume-resample $indir/FullProb.nii.gz $HCP_vol TRILINEAR \
+    $tmpoutdir/FullProb.nii.gz
+
+# Transform vol -> surf GIFTIs for each hemisphere
+# (wb_command -volume-to-surface-mapping <infile> <surface> <outfile> \
+#  -ribbon-constrained <inner-surf> <outer-surf>)
+for HCP_hemi in L R; do
+    HCP_mid_surf=$HCP_anatdir/S1200.${HCP_hemi}.midthickness_MSMAll.32k_fs_LR.surf.gii
+    HCP_inner_surf=$HCP_anatdir/S1200.${HCP_hemi}.white_MSMAll.32k_fs_LR.surf.gii
+    HCP_outer_surf=$HCP_anatdir/S1200.${HCP_hemi}.pial_MSMAll.32k_fs_LR.surf.gii
+
+    wb_command -volume-to-surface-mapping \
+        $tmpoutdir/FullProb.nii.gz $HCP_mid_surf \
+        $tmpoutdir/${HCP_hemi}.FullProb.func.gii \
+        -ribbon-constrained $HCP_inner_surf $HCP_outer_surf
+done
+
+# Merge GIFTIs over hemis to CIFTI, add ROI names from file
+# (wb_command -cifti-create-dense-scalar <outfile> \
+#  -left-metric <left-input> -right-metric <right-input>)
+wb_command -cifti-create-dense-scalar $outdir/FullProb.dscalar.nii \
+    -left-metric $tmpoutdir/L.FullProb.func.gii \
+    -right-metric $tmpoutdir/R.FullProb.func.gii \
+    -name-file $indir/ROI_names.txt
+
+
+
+### Max prob maps
+echo -e "\nMaxprobability maps..."
+
 # Get list of all surface ROIs (excluding hemi) by globbing files
 ROIs=()
 for infile in $(find $indir/ -maxdepth 1 -type f -name "Left*.nii.gz" | sort); do
@@ -48,34 +87,32 @@ done
 
 
 ## Transfrom vol ROIs to surface GIFTIs
-echo -n "Transforming to surface... "
+echo -en "\tTransforming to surface... "
 
 # Loop ROIs * hemis
 for ROI in ${ROIs[@]}; do
     for FSL_hemi in Left Right; do
         echo -n "${FSL_hemi}_${ROI} "
-    
+
         # Set some details
         if [[ $FSL_hemi == "Left" ]]; then
             HCP_hemi=L
         elif [[ $FSL_hemi == "Right" ]]; then
             HCP_hemi=R
         fi
-        
+
         infile=$indir/${FSL_hemi}_${ROI}.nii.gz
-        HCP_vol=$HCP_anatdir/S1200_AverageT1w_restore.nii.gz
-        HCP_surf=$HCP_anatdir/S1200.${HCP_hemi}.midthickness_MSMAll.32k_fs_LR.surf.gii
+        HCP_mid_surf=$HCP_anatdir/S1200.${HCP_hemi}.midthickness_MSMAll.32k_fs_LR.surf.gii
         tmpout_base=$tmpoutdir/${HCP_hemi}.${ROI}
-        
+
         # Resample to HCP MNI volume
         # (wb_command -volume-resample <infile> <ref_vol> <method> <outfile>
         wb_command -volume-resample $infile $HCP_vol ENCLOSING_VOXEL ${tmpout_base}.nii.gz
 
         # Transform vol -> surf GIFTI
-        # (wb_command -volume-to-surface-mapping \
-        #     <infile> <surface> <outfile> [method]
+        # (wb_command -volume-to-surface-mapping <infile> <surface> <outfile> [method])
         wb_command -volume-to-surface-mapping \
-            ${tmpout_base}.nii.gz $HCP_surf ${tmpout_base}.shape.gii -enclosing
+            ${tmpout_base}.nii.gz $HCP_mid_surf ${tmpout_base}.shape.gii -enclosing
     done
 done
 
@@ -83,27 +120,27 @@ echo ""
 
 
 ## Concatenate GIFTIs over hemis and ROIs into single CIFTI dlabel
-echo -en "\nMerging surface ROIs to CIFTI... "
+echo -en "\n\tMerging surface ROIs to CIFTI... "
 
 # Concat GIFTIs over hemis for each ROI and convert to temporary dscalars,
 # weighted by ROI number
 for ((i=0; i < ${#ROIs[@]}; i++)); do
     ROI=${ROIs[$i]}
     echo -n "$ROI "
-    
+
     outfile=$tmpoutdir/${ROI}.dscalar.nii
-    
+
     # (wb_command -cifti-create-dense-scalar <outfile> \
     #  -left-metric <left-input> -right-metric <right-input>)
     wb_command -cifti-create-dense-scalar $outfile \
         -left-metric $tmpoutdir/L.${ROI}.shape.gii \
         -right-metric $tmpoutdir/R.${ROI}.shape.gii
-        
+
     # (wb_command -cifti-math <expr> <outfile> -var <varname> <infile>)
     wb_command -cifti-math "x * (1 + $i)" $outfile -var x $outfile &> /dev/null
 done
 
-echo -e "\n\nCreating final label file..."
+echo -e "\n\n\tCreating final label file..."
 
 # Concat ROIs along "time" dim
 # (wb_command -cifti-merge <outfile> -cifti <infile1> -cifti <infile2> ...)
@@ -138,7 +175,8 @@ wb_command -cifti-label-import $tmpoutdir/all_ROIs.dscalar.nii \
 wb_command -set-map-names $outdir/JuBrain_ROIs.dlabel.nii -map 1 JuBrain_ROIs
 
 
-## Finish up
+
+### Finish up
 # Remove temp directory
 rm -r $tmpoutdir
 
