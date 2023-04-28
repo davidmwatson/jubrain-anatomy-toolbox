@@ -17,6 +17,9 @@ To extract ROIs:
    every ROI as a separate mask image into a directory named `JuBrain_ROIs`
    within the current directory.
    
-NOTE: These will be in SPM's MNI 1mm space, which is a little bit different
-to FSL's MNI 1mm space. Further processing is needed to convert to FSL space
-and to resample to 2mm MNI space (see `xfm_ROIs2FSL.sh` script).
+> NOTE 1: These will be in SPM's MNI 1mm space, which is a little bit different
+> to FSL's MNI 1mm space. Further processing is needed to convert to FSL space
+> and to resample to 2mm MNI space (see `xfm_ROIs2FSL.sh` script).
+
+> NOTE 2: PGp region used as ROI for caudal inferior parietal lobule (cIPL),
+> e.g. Baldassano et al. (2013), Neuroimage.
