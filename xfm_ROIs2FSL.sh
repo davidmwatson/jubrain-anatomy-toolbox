@@ -36,7 +36,7 @@ cp $indir/ROI_names.txt $outdir1/
 # Convert FSL 1mm -> 2mm
 flirt -in $outdir1/FullProb.nii.gz -ref $FSLDIR/data/standard/MNI152_T1_2mm.nii.gz \
     -applyxfm -noresampblur -init $FSLDIR/etc/flirtsch/ident.mat \
-    -interp nearestneighbour -out $outdir2/FullProb.nii.gz
+    -interp trilinear -out $outdir2/FullProb.nii.gz
 
 cp $indir/ROI_names.txt $outdir2/
 
